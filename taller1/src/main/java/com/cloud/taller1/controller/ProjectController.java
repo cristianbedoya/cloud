@@ -1,6 +1,11 @@
 package com.cloud.taller1.controller;
 
 
+import com.cloud.taller1.helpers.Response;
+import com.cloud.taller1.helpers.ResponseBuild;
+import com.cloud.taller1.persistence.entity.Project;
+import com.cloud.taller1.persistence.entity.ProjectTask;
+import com.cloud.taller1.service.ProjectService;
 import com.cloud.taller1.service.dto.ProjectDTO;
 import com.cloud.taller1.service.dto.ProjectTaskDTO;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +18,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectController {
 
-    @PostMapping
-    public void createProject(@RequestBody ProjectDTO projectDTO)
-    {
 
+    private final ResponseBuild builder;
+    private final ProjectService projectService;
+
+
+    @PostMapping
+    public Response createProject(@RequestBody ProjectDTO projectDTO)
+    {
+        Project project = projectService.save(projectDTO);
+
+        return builder.created(project);
     }
 
     @PostMapping("/tasks")
-    public void createProjectTask(@RequestBody ProjectTaskDTO projectTaskDTO)
+    public Response createProjectTask(@RequestBody ProjectTaskDTO projectTaskDTO)
     {
+        ProjectTask projectTask = projectService.saveTask(projectTaskDTO);
 
+        return builder.created(projectTask);
     }
 
     @GetMapping
