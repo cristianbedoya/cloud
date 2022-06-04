@@ -11,6 +11,7 @@ import com.cloud.taller1.service.dto.ProjectTaskDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.annotation.Retention;
 import java.util.List;
 
 @RestController
@@ -40,32 +41,46 @@ public class ProjectController {
     }
 
     @GetMapping
-    public List<ProjectDTO> getAll()
+    public Response getAll()
     {
-        return null;
+        List<Project> projects = projectService.getAll();
+
+        return builder.success(projects);
     }
 
     @GetMapping("/tasks/project/{projectIdentifier}")
-    public List<ProjectTaskDTO> getProjectTaskAll(@PathVariable("projectIdentifier") Long projectIdentifier)
+    public Response getProjectTaskAll(@PathVariable("projectIdentifier") String projectIdentifier)
     {
-        return null;
+        List<ProjectTask> projectTasks = projectService.getAllTaskByProjectIdentifier(projectIdentifier);
+
+        return builder.success(projectTasks);
     }
 
     @GetMapping("/tasks/project/hours/{projectIdentifier}")
-    public Double getProjectHoursTaskAll(@PathVariable("projectIdentifier") Long projectIdentifier)
+    public Response getProjectHoursTaskAll(@PathVariable("projectIdentifier") String projectIdentifier)
     {
-        return null;
+        Double totalHours = projectService.getTotalHoursByProjectIdentifier(projectIdentifier);
+        return builder.success(totalHours);
     }
 
     @GetMapping("/tasks/project/hours/{projectIdentifier}/{status}")
-    public Double getProjectHoursStatusTaskAll(@PathVariable("projectIdentifier") Long projectIdentifier,@PathVariable("status") String status)
+    public Response getProjectHoursStatusTaskAll(@PathVariable("projectIdentifier") String projectIdentifier,@PathVariable("status") String status)
     {
-        return null;
+        Double totalHours = projectService.getTotalHoursByProjectIdentifierAndStatus(projectIdentifier,status);
+        return builder.success(totalHours);
     }
 
     @PatchMapping ("/tasks/{idtask}/{projectIdentifier}")
-    public Double getProjectHoursStatusTaskAll(@PathVariable("idtask") Long idtask,@PathVariable("projectIdentifier") Long projectIdentifier)
+    public Response deleteTaskByProjectIdentifier(@PathVariable("idtask") Long idtask,@PathVariable("projectIdentifier") String projectIdentifier)
     {
-        return null;
+        try {
+            projectService.deleteTaskProjectIdentifier(idtask, projectIdentifier);
+
+            return builder.success();
+        }catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            return builder.failed(ex);
+        }
     }
 }
