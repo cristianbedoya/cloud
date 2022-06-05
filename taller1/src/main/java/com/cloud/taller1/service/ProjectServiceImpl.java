@@ -92,4 +92,12 @@ public class ProjectServiceImpl implements ProjectService{
         }
         //projectTaskRepository.updateStatus(idtask,projectIdentifier,"deleted");
     }
+
+    @Override
+    public Project findById(Long id) {
+
+        Optional<Project> project = projectRepository.findById(id);
+
+        return project.orElse(null);
+    }
 }

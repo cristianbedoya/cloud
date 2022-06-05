@@ -7,6 +7,8 @@ import com.cloud.taller1.service.dto.BacklogDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class BacklogServiceImpl implements BacklogService {
@@ -18,7 +20,16 @@ public class BacklogServiceImpl implements BacklogService {
     public Backlog save(BacklogDTO backlogDTO) {
 
         Backlog backlog = mapper.map(backlogDTO);
+
         backlog = backlogRepository.save(backlog);
         return backlog;
+    }
+
+    @Override
+    public Backlog findById(Long id) {
+
+        Optional<Backlog> backlog = backlogRepository.findById(id);
+
+        return backlog.orElse(null);
     }
 }

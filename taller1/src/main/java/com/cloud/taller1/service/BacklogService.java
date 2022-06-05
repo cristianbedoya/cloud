@@ -6,4 +6,6 @@ import com.cloud.taller1.service.dto.BacklogDTO;
 public interface BacklogService {
 
     Backlog save(BacklogDTO backlogDTO);
+
+    Backlog findById(Long id);
 }

@@ -3,15 +3,16 @@ package com.cloud.taller1.controller;
 
 import com.cloud.taller1.helpers.Response;
 import com.cloud.taller1.helpers.ResponseBuild;
+import com.cloud.taller1.persistence.entity.Backlog;
 import com.cloud.taller1.persistence.entity.Project;
 import com.cloud.taller1.persistence.entity.ProjectTask;
+import com.cloud.taller1.service.BacklogService;
 import com.cloud.taller1.service.ProjectService;
 import com.cloud.taller1.service.dto.ProjectDTO;
 import com.cloud.taller1.service.dto.ProjectTaskDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.annotation.Retention;
 import java.util.List;
 
 @RestController
@@ -22,6 +23,7 @@ public class ProjectController {
 
     private final ResponseBuild builder;
     private final ProjectService projectService;
+    private final BacklogService backlogService;
 
 
     @PostMapping
@@ -35,9 +37,15 @@ public class ProjectController {
     @PostMapping("/tasks")
     public Response createProjectTask(@RequestBody ProjectTaskDTO projectTaskDTO)
     {
-        ProjectTask projectTask = projectService.saveTask(projectTaskDTO);
+        if(projectTaskDTO != null && projectTaskDTO.getBacklog() != null) {
+            Backlog backlog = backlogService.findById(projectTaskDTO.getBacklog().getId());
+            if(backlog != null && projectTaskDTO.getBacklog().getProyectIdentifier().equalsIgnoreCase(backlog.getProyectIdentifier())){
+                ProjectTask projectTask = projectService.saveTask(projectTaskDTO);
+                return builder.created(projectTask);
+            }
+        }
 
-        return builder.created(projectTask);
+        return builder.badRequest(projectTaskDTO);
     }
 
     @GetMapping
@@ -60,6 +68,7 @@ public class ProjectController {
     public Response getProjectHoursTaskAll(@PathVariable("projectIdentifier") String projectIdentifier)
     {
         Double totalHours = projectService.getTotalHoursByProjectIdentifier(projectIdentifier);
+
         return builder.success(totalHours);
     }
 
@@ -67,6 +76,7 @@ public class ProjectController {
     public Response getProjectHoursStatusTaskAll(@PathVariable("projectIdentifier") String projectIdentifier,@PathVariable("status") String status)
     {
         Double totalHours = projectService.getTotalHoursByProjectIdentifierAndStatus(projectIdentifier,status);
+
         return builder.success(totalHours);
     }
 

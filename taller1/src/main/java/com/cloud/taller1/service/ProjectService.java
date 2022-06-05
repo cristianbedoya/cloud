@@ -22,4 +22,6 @@ public interface ProjectService {
     Double getTotalHoursByProjectIdentifierAndStatus(String projectIdentifier, String status);
 
     void deleteTaskProjectIdentifier(Long idtask, String projectIdentifier);
+
+    Project findById(Long id);
 }

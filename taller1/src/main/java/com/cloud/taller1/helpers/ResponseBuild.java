@@ -31,4 +31,15 @@ public class ResponseBuild {
                 .code(INTERNAL_SERVER_ERROR.value()).build();
     }
 
+    public Response badRequest(Object data) {
+        return Response.builder()
+                .data(data)
+                .code(BAD_REQUEST.value()).build();
+    }
+    public Response badRequest() {
+        return Response.builder()
+                .data(BAD_REQUEST)
+                .code(BAD_REQUEST.value()).build();
+    }
+
 }

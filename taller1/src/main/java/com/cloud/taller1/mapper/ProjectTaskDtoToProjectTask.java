@@ -1,5 +1,6 @@
 package com.cloud.taller1.mapper;
 
+import com.cloud.taller1.persistence.entity.Backlog;
 import com.cloud.taller1.persistence.entity.ProjectTask;
 import com.cloud.taller1.service.dto.ProjectTaskDTO;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,11 @@ public class ProjectTaskDtoToProjectTask implements IMapper<ProjectTaskDTO, Proj
         projectTask.setSummary(in.getSummary());
         projectTask.setStatus(in.getStatus());
         projectTask.setPriority(in.getPriority());
+
+        Backlog backlog = new Backlog();
+        backlog.setId(in.getBacklog().getId());
+
+        projectTask.setBacklog(backlog);
 
         return projectTask;
     }
