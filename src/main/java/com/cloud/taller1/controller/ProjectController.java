@@ -37,15 +37,21 @@ public class ProjectController {
     @PostMapping("/tasks")
     public Response createProjectTask(@RequestBody ProjectTaskDTO projectTaskDTO)
     {
-        if(projectTaskDTO != null && projectTaskDTO.getBacklog() != null) {
-            Backlog backlog = backlogService.findById(projectTaskDTO.getBacklog().getId());
-            if(backlog != null && projectTaskDTO.getBacklog().getProyectIdentifier().equalsIgnoreCase(backlog.getProyectIdentifier())){
-                ProjectTask projectTask = projectService.saveTask(projectTaskDTO);
-                return builder.created(projectTask);
-            }
-        }
+        try {
 
-        return builder.badRequest(projectTaskDTO);
+            if(projectTaskDTO != null && projectTaskDTO.getBacklog() != null) {
+                Backlog backlog = backlogService.findById(projectTaskDTO.getBacklog().getId());
+                if(backlog != null && projectTaskDTO.getProjectIdentifier().equalsIgnoreCase(backlog.getProyectIdentifier())){
+                    ProjectTask projectTask = projectService.saveTask(projectTaskDTO);
+                    return builder.created(projectTask);
+                }
+            }
+
+            return builder.badRequest(projectTaskDTO);
+        } catch (Exception ex)
+        {
+           return builder.failed(projectTaskDTO);
+        }
     }
 
     @GetMapping
